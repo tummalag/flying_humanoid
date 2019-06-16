@@ -197,9 +197,8 @@ def end_eff_pos(t0,t1,te):
     psi = np.arccos((T0_3[2][2])/np.cos(theta))
     phi = np.arccos((T0_3[0][0])/np.cos(theta))
 
-    dxl1_goal_position10 = (theta * 4095) // 360
 
-while 1:
+if 1==1:
     print("Press any key to continue! (or press ESC to quit!)")
     if getch() == chr(0x1b):
         break
@@ -287,6 +286,13 @@ while 1:
     #    index = 0
 
 
+print(" X : ",p_x)
+print(" Y : ",p_y)
+print(" Z : ",p_z)
+print(" theta : ",theta)
+print(" psi : ",psi)
+print(" phi : ",phi)
+
 # Clear bulkread parameter storage
 groupBulkRead.clearParam()
 
@@ -304,7 +310,6 @@ if dxl_comm_result != COMM_SUCCESS:
     print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
 elif dxl_error != 0:
     print("%s" % packetHandler.getRxPacketError(dxl_error))
-
 
 # Disable Dynamixel Torque DXL3
 dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL3_ID, ADDR_TORQUE_ENABLE, TORQUE_DISABLE)
