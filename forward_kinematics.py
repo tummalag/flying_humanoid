@@ -26,9 +26,9 @@ a0 				= 2
 a1 				= 7
 a2 				= 3
 # Angles of the joints
-t0 				= 45
-t1				= 45 
-t2				= 45
+t0 				= 180
+t1				= 180 
+t2				= 180
 
 # Angles in radians
 t0 		= t0/180*np.pi
@@ -61,11 +61,13 @@ DEVICENAME                  = '/dev/ttyUSB0'    # Check which port is being used
 
 TORQUE_ENABLE               = 1                 # Value for enabling the torque
 TORQUE_DISABLE              = 0                 # Value for disabling the torque
-#DXL1_MIN_POSITION_VALUE     = -1000			# Dynamixel 1 will rotate between this value
-#DXL1_MAX_POSITION_VALUE     = 1000		        # and this value 
-#DXL2_MIN_POSITION_VALUE     = -2000    	     # Dynamixel 2 will rotate between this value
-#DXL2_MAX_POSITION_VALUE     = 2000 	       	# and this value
-DXL_MOVING_STATUS_THRESHOLD = 5          		# Dynamixel moving status threshold
+DXL1_MIN_POSITION_VALUE     = 1500			# Dynamixel 1 will rotate between this value
+DXL1_MAX_POSITION_VALUE     = 2000		        # and this value 
+DXL2_MIN_POSITION_VALUE     = 1100    	     # Dynamixel 2 will rotate between this value
+DXL2_MAX_POSITION_VALUE     = 2700 	       	# and this value
+DXL3_MIN_POSITION_VALUE     = 1800          # Dynamixel 2 will rotate between this value
+DXL3_MAX_POSITION_VALUE     = 3000              # and this value
+DXL_MOVING_STATUS_THRESHOLD = 20          		# Dynamixel moving status threshold
 
 DXL1_MAX_POSITION_VALUE = int((t0*4095)/360*180/np.pi)
 DXL2_MAX_POSITION_VALUE = int((t1*4095)/360*180/np.pi)
@@ -197,8 +199,15 @@ def end_eff_pos(t0,t1,te):
     psi = np.arccos((T0_3[2][2])/np.cos(theta))
     phi = np.arccos((T0_3[0][0])/np.cos(theta))
 
+    print(" X : ",p_x)
+    print(" Y : ",p_y)
+    print(" Z : ",p_z)
+    print(" theta : ",theta)
+    print(" psi : ",psi)
+    print(" phi : ",phi)
 
-if 1==1:
+
+while True:
     print("Press any key to continue! (or press ESC to quit!)")
     if getch() == chr(0x1b):
         break
@@ -271,28 +280,26 @@ if 1==1:
 	number = dxl2_present_position & 0xFFFFFFFF
         dxl2_present_position = ctypes.c_long(number).value
 
-    number = dxl3_present_position & 0xFFFFFFFF
+        number = dxl3_present_position & 0xFFFFFFFF
         dxl3_present_position = ctypes.c_long(number).value
 
-	print("[ID:%03d] Present Position : %d \t [ID:%03d] LED Value: %d" % (DXL1_ID, dxl1_present_position, DXL2_ID, dxl2_present_position, DXL3_ID, dxl3_present_position))
+	print("[ID:%03d] Present Position : %d \t [ID:%03d] LED Value: %d \t [ID:%03d] Present Position : %d " % (DXL1_ID, dxl1_present_position, DXL2_ID, dxl2_present_position, DXL3_ID, dxl3_present_position))
 
-	if ((abs(dxl1_goal_position[index] - dxl1_present_position) > DXL_MOVING_STATUS_THRESHOLD) and (abs(dx2_goal_position[index] - dxl2_present_position) > DXL_MOVING_STATUS_THRESHOLD)):
+	if ((abs(dxl1_goal_position[index] - dxl1_present_position) < DXL_MOVING_STATUS_THRESHOLD) and (abs(dxl2_goal_position[index] - dxl2_present_position) < DXL_MOVING_STATUS_THRESHOLD) and (abs(dxl3_goal_position[index] - dxl3_present_position) < DXL_MOVING_STATUS_THRESHOLD)):
 	    break
+	
+	abc1 = dxl1_goal_position[index]*np.pi*360/180/4095
+        abc2 = dxl2_goal_position[index]*np.pi*360/180/4095
+        abc3 = dxl3_goal_position[index]*np.pi*360/180/4095
 
-    # Change goal position
-    #if index == 0:
-    #    index = 1
-    #else:
-    #    index = 0
+	end_eff_pos(abc1,abc2,abc3)
 
-
-print(" X : ",p_x)
-print(" Y : ",p_y)
-print(" Z : ",p_z)
-print(" theta : ",theta)
-print(" psi : ",psi)
-print(" phi : ",phi)
-
+    #  Change goal position
+    if index == 0:
+        index = 1
+    else:
+        index = 0
+     
 # Clear bulkread parameter storage
 groupBulkRead.clearParam()
 
