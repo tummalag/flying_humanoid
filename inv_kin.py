@@ -20,3 +20,17 @@ else:
         return ch
 
 from dynamixel_sdk import *                    # Uses Dynamixel SDK library
+
+# Length of the arms in inches
+a0              = 2   
+a1              = 7
+a2              = 3
+# Angles of the joints
+t0              = 180
+t1              = 180 
+t2              = 180
+
+# Angles in radians
+t0      = t0/180*np.pi
+t1      = t1/180*np.pi
+t2      = t2/180*np.pi
