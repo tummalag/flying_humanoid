@@ -23,6 +23,7 @@ while True:
                 sendingByte = 0 <<7 | speedVal
             
             ser.write('%d' %sendingByte)
+            print(sendingByte)
          
         except:
              print("Input error")
