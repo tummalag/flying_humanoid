@@ -6,6 +6,7 @@ Servo left;
 Servo right;
 const int servoMin = 45;
 const int servoMax = 175;
+const int binMax = 127
 
 void setup() {
   // put your setup code here, to run once:
@@ -22,7 +23,9 @@ void loop() {
   if(Serial.available()){
     int data = Serial.parseInt();
     
-    if data && 256 == 0: // means data is for left rotor
+    if data && 256 == 0: // means data is for right rotor
+      serInp = servoInput(data);
+      
       
     
     Serial.flush();
@@ -30,15 +33,8 @@ void loop() {
   delay(1000);
 }
 
-void flash(int n){
-  Serial.print("");
-  Serial.println(n);
-  for(int i = 0; i<n; i++){
-    digitalWrite(13,HIGH);
-    delay(1000);
-    digitalWrite(13,LOW);
-    delay(1000);
-    Serial.println(i+1);
-    }
-  Serial.println("Flash complete");
+void servoInput(int val){
+  serVal = val/binMax *(servoMax - servoMin) + servoMin;
+  return serVal;
+    
 }
