@@ -25,7 +25,7 @@ void loop() {
     
     if( data < 128){ // means data is for right rotor
       int servoInp = servoInput(data);
-      //left.write(servoInp);
+      left.write(servoInp);
       Serial.print("Left \t");
       Serial.print(data);
       Serial.print("\t");
@@ -35,7 +35,7 @@ void loop() {
 
     else{ // means data is for left rotor
       int servoInp = servoInput(data - 128);
-      //right.write(servoInp);
+      right.write(servoInp);
       Serial.print("Right \t");
       Serial.print(data -128);
       Serial.print("\t");
