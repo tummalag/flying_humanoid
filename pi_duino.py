@@ -11,7 +11,7 @@ import serial
 import time
 
 # Initializing port settings
-port = "/dev/ttyUSB0"
+port = "/dev/ttyUSB1"
 ser = serial.Serial(port,9600)
 ser.flushInput()
 
@@ -20,25 +20,25 @@ while True:
     if ser.inWaiting()>0:               
         inputValue = ser.readline()
         print(inputValue)
-        try:
+    try:
             rotor = input("Provide Left or Right rotor : ")
             rotSpeed = int(input("Provide the rotation speed in '%' : "))
             
             speedVal = int(rotSpeed*127/100)
             
-            if rotor == 'Left' | rotor == 'left' | rotor = 'l':
+            if rotor == 'Left' or rotor == 'left' or rotor == 'l':
                 sendingByte = 1 << 7 | speedVal
-                
-            elif rotor == 'Right' | rotor == 'right' | rotor = 'r':
+
+            elif rotor == 'Right' or rotor == 'right' or rotor == 'r':
                 sendingByte = 0 <<7 | speedVal
-            
+
             else:
-                print("Wrong input please try again")
-                break:
-                    
+                print("wrong input")
+                sendingByte = 0
+
             ser.write('%d' %sendingByte)
-            print(sendingByte)
-         
-        except:
-             print("Input error")
-                ser.write('0')
+            print("Sent :" ,sendingByte)
+        
+    except:
+            print("Input error")
+            ser.write('0')
