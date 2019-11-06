@@ -289,8 +289,8 @@ while True:
 	    break
 	
 	abc1 = dxl1_goal_position[index]*np.pi*360/180/4095
-        abc2 = dxl2_goal_position[index]*np.pi*360/180/4095
-        abc3 = dxl3_goal_position[index]*np.pi*360/180/4095
+    abc2 = dxl2_goal_position[index]*np.pi*360/180/4095
+    abc3 = dxl3_goal_position[index]*np.pi*360/180/4095
 
 	end_eff_pos(abc1,abc2,abc3)
 
