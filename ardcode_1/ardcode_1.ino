@@ -7,10 +7,12 @@ const int mot[] = {9,10}; // Initializing motor pins
 const int mot_L = 0;      // mot[mot_L] is to control left motor.
 const int mot_R = 1;      // similarly for right motor
 
+const double mot_PWM_offset[] = {50,60}; // Motor offset value.
+
 Servo left;               // Creating 2 servos left and right
 Servo right;
-const double servoMin = 65.0;  // servo PWM min value
-const double servoMax = 100.0; // servo PWM max value
+const double servoMin = 0.0;  // servo PWM min value
+const double servoMax = 60.0; // servo PWM max value
 
 int potentiometerPin = A1;
 const int potRefVal = 550;  // Refereance Value
@@ -18,8 +20,8 @@ const int potMinVal = 250;  // Left most value -45 degree
 const int potMaxVal = 850;  // Right most value +45 degree
 
 // Gain constants
-const double kp = 0.020;
-const double ki = 0.001;
+const double kp = 0.0050;
+const double ki = 0.0001;
 double i_err = 0.0;
 
 double getAngle() {
@@ -30,7 +32,7 @@ double getAngle() {
 }
 
 double enc2deg(double enc){
-  double deg = (enc - potRefVal)/(potRefVal - potMinVal)*45;
+  double deg = (enc - potRefVal)/(potRefVal - potMinVal)*30;
   return deg;
 }
 
@@ -41,22 +43,22 @@ int val2PWM(double val){
   return (int)thrustInPWM;
 }
 
-int setMotor(double err){
-  double absErr = abs(err);
-  if (err > 1.0){
-    err =  1.0;
+int setMotor(double val){
+  double absVal = abs(val);
+  if (val > 1.0){
+    val =  1.0;
   }
-  if (err < -1.0){
-    err =  -1.0;
+  if (val < -1.0){
+    val =  -1.0;
   }
-  if (err > 0.0){
-    setMotorThrust(mot[mot_L],absErr);
-    setMotorThrust(mot[mot_R],0.0);
+  if (val > 0.0){
+    setMotorThrust(mot[mot_L],absVal);
+    setMotorThrust(mot[mot_R],servoMin);
     return 0;
   }
-   if(err <= 0.0){
-    setMotorThrust(mot[mot_R],absErr);
-    setMotorThrust(mot[mot_L],0.0);
+   if(val <= 0.0){
+    setMotorThrust(mot[mot_R],absVal);
+    setMotorThrust(mot[mot_L],servoMin);
     return 0;
   } 
   return 1;
@@ -65,14 +67,14 @@ int setMotor(double err){
 int setMotorThrust(int servo, double err){
   if (servo == mot[mot_L]){
     int thrust = val2PWM(err);
-    left.write(thrust);
+    left.write(thrust + mot_PWM_offset[mot_L]);
     Serial.print("left   ");
     Serial.println(thrust);
     return 0;
   }
   if (servo == mot[mot_R]){
     int thrust = val2PWM(err);
-    right.write(thrust);
+    right.write(thrust + mot_PWM_offset[mot_R]);
     Serial.print("right   ");
     Serial.println(thrust);
     return 0;
@@ -89,6 +91,9 @@ void setup() {
   right.attach(mot[mot_R]);
   left.write(45);
   right.write(45);
+  delay(1000);
+  left.write(servoMax + mot_PWM_offset[mot_L]);
+  right.write(servoMax + mot_PWM_offset[mot_R]);
   delay(1000);
 }
 
