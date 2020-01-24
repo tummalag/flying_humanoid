@@ -1,7 +1,7 @@
 #include <Servo.h>
 
 // Desired Values
-double theta_D = 0.0;         // angle in degree
+double theta_D = 20.0;         // angle in degree
 int timer = 1000;
 
 const int mot[] = {5,10}; // Initializing motor pins
@@ -91,7 +91,7 @@ int startUp(){
 
 void setup() {
   Serial.begin(115200);
-  Serial.println("Bot is ready to fly!!");
+  //Serial.println("Bot is ready to fly!!");
   pinMode(mot[mot_L],OUTPUT);
   pinMode(mot[mot_R],OUTPUT);
   left.attach(mot[mot_L]);
@@ -114,7 +114,7 @@ void loop() {
   double p_err = kp*error;
   double c = p_err + i_err;
   setMotor(c);
-  Serial.println(theta);
+  Serial.print(String(theta));
   //Serial.print(' ');
   //Serial.println(c);
   if ( timer < 0 ){
@@ -122,6 +122,8 @@ void loop() {
     theta_D = -theta_D; 
   }
   timer--;
+  //Serial.print("\t");
+  //Serial.println(theta_D);
   //Serial.println(timer);
   delay(10);
 }

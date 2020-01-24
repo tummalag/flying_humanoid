@@ -8,37 +8,42 @@ const float servoMin = 55;
 const float servoMax = 110;
 const float binMax = 127;
 int potentiometerPin = A1;
-int potentiometerValue = 0;
-const int potMinVal = 250;
-const int potMaxVal = 850;
-int prev_err_r = 0; 
-int prev_err_l = 0; 
-const float kp = 4;
+float potentiometerValue = 0;
+const float potMinVal = 250;
+const float potMaxVal = 850;
+float prev_err_r = 0; 
+float prev_err_l = 0; 
+const float kp = 1`;
 const float kd = 50;
 const float ki = 0;
-const int dt = 100; // 0.2 sec
+const float dt = 100; // 0.2 sec
 float i_err_r = 0;
 float i_err_l = 0;
-const int potRefVal = 550;
-int potStableVal = 550;
+const float potRefVal = 550;
+float potStableVal = 550;
 
 
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
   Serial.println("Bot is ready to fly!!");
-  /*
   Serial.println("Please Enter the Stable angle \n"
                     "'+' indicates Right \n"
                     "'-' indicates Left");
-  if (Serial.available){
+  if (Serial.available()){
     float data = Serial.read();
+    potStableVal = data*(potMaxVal - potRefVal)/45.0 + potRefVal;
+    
+    /*
     if (data > 0){
-      data = data/(potMaxVal - potRefVal)*
-      potStableVal 
+      potStableVal = data*(potMaxVal - potRefVal)/45.0 + potRefVal;
     }
+    else{
+      potStableVal = potRefVal + data*(potRefVal - potMinVal)/45.0 ;
+    }
+    */
   }
-  */
+  
   pinMode(leftRotor,OUTPUT);
   pinMode(rightRotor,OUTPUT);
   left.attach(leftRotor);
