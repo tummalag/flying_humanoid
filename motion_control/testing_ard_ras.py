@@ -116,10 +116,10 @@ def enableTorque(DXL_ID):
         print("%s" % packetHandler.getRxPacketError(dxl_error))
     else: print(DXL_ID,"has been successfully connected")
 
-#enableTorque(DXL1_ID)
-#enableTorque(DXL2_ID)
-#enableTorque(DXL3_ID)
-#enableTorque(DXL4_ID)
+enableTorque(DXL1_ID)
+enableTorque(DXL2_ID)
+enableTorque(DXL3_ID)
+enableTorque(DXL4_ID)
 enableTorque(DXL5_ID)
 enableTorque(DXL6_ID)
 
@@ -132,10 +132,10 @@ def setGoalPosition(DXL_ID,dxl_goal_position):
     elif dxl_error != 0:
         print("%s" % packetHandler.getRxPacketError(dxl_error))
 
-#setGoalPosition(DXL1_ID,dxl1_goal_position)
-#setGoalPosition(DXL2_ID,dxl2_goal_position)
-#setGoalPosition(DXL3_ID,dxl3_goal_position)
-#setGoalPosition(DXL4_ID,dxl4_goal_position)
+setGoalPosition(DXL1_ID,dxl1_goal_position)
+setGoalPosition(DXL2_ID,dxl2_goal_position)
+setGoalPosition(DXL3_ID,dxl3_goal_position)
+setGoalPosition(DXL4_ID,dxl4_goal_position)
 setGoalPosition(DXL5_ID,dxl5_goal_position)
 setGoalPosition(DXL6_ID,dxl6_goal_position)
 
@@ -186,7 +186,7 @@ while 1:
         setGoalPosition(DXL6_ID,dxl6_goal_position)
         dxl5_present_position = getPosition(DXL5_ID)
         dxl5_present_position = getPosition(DXL6_ID)
-        print("  [ID:%03d] : %03d, [ID:%03d] : %03d" % (DXL5_ID, dxl5_goal_position, DXL5_ID, dxl6_goal_position))
+        print("  [ID:%03d] : %03d, [ID:%03d] : %03d" % (DXL5_ID, dxl5_present_position, DXL5_ID, dxl6_present_position))
 
         if kbhit():
             c = getch()
@@ -195,8 +195,8 @@ while 1:
                 break
 
 # Function to Disable Dynamixel Torque DXL
-def disableTorque(DXL):
-    dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL1_ID, ADDR_TORQUE_ENABLE, TORQUE_DISABLE)
+def disableTorque(DXL_ID):
+    dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL_ID, ADDR_TORQUE_ENABLE, TORQUE_DISABLE)
     if dxl_comm_result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
     elif dxl_error != 0:
