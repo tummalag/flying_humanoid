@@ -21,8 +21,8 @@ const int potMinVal = 250;  // Left most value -45 degree
 const int potMaxVal = 850;  // Right most value +45 degree
 
 // Gain constants
-const double kp = 0.005;
-const double ki = 0.00009;
+const double kp = 0.025;
+const double ki = 0.0002;
 double i_err = 0.0;
 
 double getAngle() {
@@ -114,7 +114,7 @@ void loop() {
   double p_err = kp*error;
   double c = p_err + i_err;
   setMotor(c);
-  Serial.print(String(theta));
+  Serial.println(String(theta));
   //Serial.print(' ');
   //Serial.println(c);
   if ( timer < 0 ){
