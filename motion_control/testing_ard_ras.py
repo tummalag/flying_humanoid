@@ -76,7 +76,7 @@ dxl6_goal_position          = 2048         # Goal position
 
 THETA_MAX, THETA_MIN        = 45, -45 
 
-dxl_MIN, dxl_MAX            = 1024, 3072
+dxl_MIN, dxl_MAX            = 1536, 2560
 
 
 # Initialize PortHandler instance
@@ -167,6 +167,7 @@ print("Entering while loop")
 while 1:
     if ser.inWaiting()>0:
         theta = ser.readline()
+        ser.flushInput()
         print(theta)
 
         theta = float(theta)
