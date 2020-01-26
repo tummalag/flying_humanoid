@@ -4,6 +4,7 @@ from __future__ import print_function
 import os
 import ctypes
 import time
+import serial
 
 if os.name == 'nt':
     import msvcrt
@@ -62,19 +63,26 @@ DEVICENAME                  = '/dev/ttyUSB0'    # Check which port is being used
 
 TORQUE_ENABLE               = 1                                 # Value for enabling the torque 
 TORQUE_DISABLE              = 0                                 # Value for disabling the torque 
-DXL_MOVING_STATUS_THRESHOLD = 5                 # Dynamixel will rotate between this value 
+DXL_MOVING_STATUS_THRESHOLD = 10                 # Dynamixel will rotate between this value 
 
 
 ESC_ASCII_VALUE             = 0x1b
 SPACE_ASCII_VALUE           = 0x20
 
-index = 0
-dxl1_goal_position = [2048,2048,2048,2048,2048,3072]         # Goal position
-dxl2_goal_position = [2048,2048,2048,2048,2048,1024]         # Goal position
-dxl3_goal_position = [2048,2048,2048,2048,1024,2048]         # Goal position
-dxl4_goal_position = [2048,2048,2048,2048,3072,2048]         # Goal position
-dxl5_goal_position = [2048,1000,3000,2048,2048,2048]         # Goal position
-dxl6_goal_position = [2048,1000,3000,2048,2048,2048]         # Goal position
+#pos_D5 			    = 2048 	# initialising pos val 
+#pos_D6                      = 2048      # initialising pos val
+
+#index = 0
+dxl1_goal_position = 3072         # Goal position
+dxl2_goal_position = 1024         # Goal position
+dxl3_goal_position = 2048         # Goal position
+dxl4_goal_position = 2048         # Goal position
+dxl5_goal_position = 2048         # Goal position
+dxl6_goal_position = 2048         # Goal position
+
+# Serial input parameters
+THETA_MAX = 45
+THETA_MIN = -45 
 
 # Initialize PortHandler instance
 # Set the port path
@@ -159,59 +167,77 @@ elif dxl_error != 0:
 else:
     print("Dynamixel 6 has been successfully connected")
 
+# Initializing port settings
+port = "/dev/ttyUSB1"
+ser = serial.Serial(port,115200)
+ser.flushInput()
 
 
 while 1:
+    if ser.inWaiting()>0:
+        theta = ser.readline()
+        print(theta)
+
+        theta = float(theta)
+        theta = min(max(theta,THETA_MIN),THETA_MAX)
+        # defining the position value
+        dxl5_goal_position = int((theta/90.0)*2048 + 2048)
+        dxl5_goal_position = min(max(dxl5_goal_position,1024),3072)
+        dxl6_goal_position = int((-theta/90.0)*2048 + 2048)
+        dxl6_goal_position = min(max(dxl6_goal_position,1024),3072)
+        print("  [ID:%03d] : %03d, [ID:%03d] : %03d" % (DXL5_ID, dxl5_goal_position, DXL5_ID, dxl6_goal_position))
+
     print("\nPress any key to continue! (or press ESC to quit!)")
-    if getch() == chr(ESC_ASCII_VALUE):
-        break
-    print("  Press SPACE key to clear multi-turn information! (or press ESC to stop!)")
+    #if getch() == chr(ESC_ASCII_VALUE):
+    #    break
+    #print("  Press SPACE key to clear multi-turn information! (or press ESC to stop!)")
 
     # Write goal position dxl1    
-    dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, DXL1_ID, ADDR_GOAL_POSITION, dxl1_goal_position[index])
+    dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, DXL1_ID, ADDR_GOAL_POSITION, dxl1_goal_position)
     if dxl_comm_result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
     elif dxl_error != 0:
         print("%s" % packetHandler.getRxPacketError(dxl_error))
  
     # Write goal position dxl2
-    dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, DXL2_ID, ADDR_GOAL_POSITION, dxl2_goal_position[index])
+    dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, DXL2_ID, ADDR_GOAL_POSITION, dxl2_goal_position)
     if dxl_comm_result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
     elif dxl_error != 0:
         print("%s" % packetHandler.getRxPacketError(dxl_error))
 
     # Write goal position dxl3
-    dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, DXL3_ID, ADDR_GOAL_POSITION, dxl3_goal_position[index])
+    dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, DXL3_ID, ADDR_GOAL_POSITION, dxl3_goal_position)
     if dxl_comm_result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
     elif dxl_error != 0:
         print("%s" % packetHandler.getRxPacketError(dxl_error))
  
     # Write goal position dxl4
-    dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, DXL4_ID, ADDR_GOAL_POSITION, dxl4_goal_position[index])
+    dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, DXL4_ID, ADDR_GOAL_POSITION, dxl4_goal_position)
     if dxl_comm_result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
     elif dxl_error != 0:
         print("%s" % packetHandler.getRxPacketError(dxl_error))
 
     # Write goal position dxl5    
-    dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, DXL5_ID, ADDR_GOAL_POSITION, dxl5_goal_position[index])
+    dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, DXL5_ID, ADDR_GOAL_POSITION, dxl5_goal_position)
     if dxl_comm_result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
     elif dxl_error != 0:
         print("%s" % packetHandler.getRxPacketError(dxl_error))
  
     # Write goal position dxl6
-    dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, DXL6_ID, ADDR_GOAL_POSITION, dxl6_goal_position[index])
+    dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, DXL6_ID, ADDR_GOAL_POSITION, dxl6_goal_position)
     if dxl_comm_result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
     elif dxl_error != 0:
         print("%s" % packetHandler.getRxPacketError(dxl_error))
 
 
-    while 1:
-        # Read present position DXL1
+    while 0:
+        
+	# Read present position DXL1
         dxl1_present_position, dxl_comm_result, dxl_error = packetHandler.read4ByteTxRx(portHandler, DXL1_ID, ADDR_PRESENT_POSITION)
         if dxl_comm_result != COMM_SUCCESS:
             print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
@@ -253,10 +279,10 @@ while 1:
         elif dxl_error != 0:
             print("%s" % packetHandler.getRxPacketError(dxl_error))
 
- 	print("  [ID:%03d] : %03d, [ID:%03d] : %03d, [ID:%03d] : %03d, [ID:%03d] : %03d, [ID:%03d] : %03d, [ID:%03d] : %03d" % (DXL1_ID, dxl1_present_position, DXL2_ID, dxl2_present_position,DXL3_ID, dxl3_present_position, DXL4_ID, dxl4_present_position,DXL5_ID, dxl5_present_position, DXL6_ID, dxl6_present_position))
+ 	#print("  [ID:%03d] : %03d, [ID:%03d] : %03d, [ID:%03d] : %03d, [ID:%03d] : %03d, [ID:%03d] : %03d, [ID:%03d] : %03d" % (DXL1_ID, dxl1_present_position, DXL2_ID, dxl2_present_position,DXL3_ID, dxl3_present_position, DXL4_ID, dxl4_present_position,DXL5_ID, dxl5_present_position, DXL6_ID, dxl6_present_position))
  
 
-        if kbhit():
+        #if kbhit():
             c = getch()
             if c == chr(SPACE_ASCII_VALUE):
                 print("\n  Stop & Clear Multi-Turn Information! ")   
@@ -347,7 +373,7 @@ while 1:
                     print("%s" % packetHandler.getRxPacketError(dxl_error))
 
 
-                print("  [ID:%03d] : %03d, [ID:%03d] : %03d, [ID:%03d] : %03d, [ID:%03d] : %03d, [ID:%03d] : %03d, [ID:%03d] : %03d" % (DXL1_ID, dxl1_present_position, DXL2_ID, dxl2_present_position,DXL3_ID, dxl3_present_position, DXL4_ID, dxl4_present_position,DXL5_ID, dxl5_present_position, DXL6_ID, dxl6_present_position))
+                #print("  [ID:%03d] : %03d, [ID:%03d] : %03d, [ID:%03d] : %03d, [ID:%03d] : %03d, [ID:%03d] : %03d, [ID:%03d] : %03d" % (DXL1_ID, dxl1_present_position, DXL2_ID, dxl2_present_position,DXL3_ID, dxl3_present_position, DXL4_ID, dxl4_present_position,DXL5_ID, dxl5_present_position, DXL6_ID, dxl6_present_position))
 	        break
 
             elif c == chr(ESC_ASCII_VALUE):
@@ -392,16 +418,22 @@ while 1:
 
                 break
 
-        if (abs(dxl1_goal_position[index] - dxl1_present_position) < DXL_MOVING_STATUS_THRESHOLD) and (abs(dxl2_goal_position[index] - dxl2_present_position) < DXL_MOVING_STATUS_THRESHOLD and abs(dxl3_goal_position[index] - dxl3_present_position) < DXL_MOVING_STATUS_THRESHOLD) and (abs(dxl4_goal_position[index] - dxl4_present_position) < DXL_MOVING_STATUS_THRESHOLD and abs(dxl5_goal_position[index] - dxl5_present_position) < DXL_MOVING_STATUS_THRESHOLD) and (abs(dxl6_goal_position[index] - dxl6_present_position) < DXL_MOVING_STATUS_THRESHOLD):
+        if (abs(dxl5_goal_position - dxl5_present_position) < DXL_MOVING_STATUS_THRESHOLD) and (abs(dxl6_goal_position - dxl6_present_position) < DXL_MOVING_STATUS_THRESHOLD):
+	    if ser.inWaiting()>0:
+                theta = ser.readline()
+                print(theta)
+	    
+	    theta = float(theta)
+    	    theta = min(max(theta,THETA_MIN),THETA_MAX)
+            # defining the position value
+            dxl5_goal_position = int((theta/90.0)*2048 + 2048)
+	    dxl5_goal_position = min(max(dxl5_goal_position,1024),3072) 
+            dxl6_goal_position = int((-theta/90.0)*2048 + 2048)
+	    dxl6_goal_position = min(max(dxl6_goal_position,1024),3072)
+            print("  [ID:%03d] : %03d, [ID:%03d] : %03d" % (DXL5_ID, dxl5_goal_position, DXL5_ID, dxl6_goal_position))
             break
 
     time.sleep(1)
-
-    # Change goal position
-    if index > 5:
-        index = 0
-    else:
-        index += 1
 
 # Disable Dynamixel Torque DXL1
 dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL1_ID, ADDR_TORQUE_ENABLE, TORQUE_DISABLE)
