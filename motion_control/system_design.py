@@ -3,8 +3,6 @@ import os
 import ctypes
 import time
 import serial
-from datetime import datetime
-import csv
 
 if os.name == 'nt':
     import msvcrt
@@ -69,10 +67,10 @@ ESC_ASCII_VALUE             = 0x1b
 SPACE_ASCII_VALUE           = 0x20
 
 #index = 0
-dxl1_goal_position          = 3072         # Goal position
-dxl2_goal_position          = 1024         # Goal position
-dxl3_goal_position          = 2048         # Goal position
-dxl4_goal_position          = 2048         # Goal position
+dxl1_goal_position          = 2560         # Goal position
+dxl2_goal_position          = 1536         # Goal position
+dxl3_goal_position          = 1536         # Goal position
+dxl4_goal_position          = 2560         # Goal position
 dxl5_goal_position          = 2048         # Goal position
 dxl6_goal_position          = 2048         # Goal position
 
@@ -168,23 +166,23 @@ ser.flushInput()
 
 print("Entering while loop")
 while 1:
-	with open('designData.csv', mode=w) as data:
-		updateData = csv.writer(designData, delimiter=',', quoting=csv.QUOTE_MINIMAL)
-		starttime = datetime.now()
-		if ser.inWaiting()>0:
-        	theta = ser.readline()
-        	endtime = datetime.now()
-        	updateData.writerow([theta , endtime - starttime])
+	with open('position4Data.txt', mode='a') as data:
+	    if ser.inWaiting()>0:
+        	theta = float(ser.readline().strip())
+		print(theta)
+        	endtime = time.time()
+        	data.write("%f, %f\n" % (endtime,theta))
     
-        if kbhit():
-            c = getch()
-            if c == chr(ESC_ASCII_VALUE):
-                print("STOPPED!!!!")
-                break
+            if kbhit():
+                c = getch()
+                if c == chr(ESC_ASCII_VALUE):
+                    print("STOPPED!!!!")
+                    break
 
 # Function to Disable Dynamixel Torque DXL
-def disableTorque(DXL):
-    dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL1_ID, ADDR_TORQUE_ENABLE, TORQUE_DISABLE)
+def disableTorque(DXL_ID):
+    dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL_ID, ADDR_TORQUE_ENABLE, TORQUE_DISABLE)
+
     if dxl_comm_result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
     elif dxl_error != 0:

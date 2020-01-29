@@ -49,7 +49,7 @@ ADDR_PRESENT_POSITION       = 132
 PROTOCOL_VERSION            = 2.0               # See which protocol version is used in the Dynamixel
 
 # Default setting
-DXL1_ID                     = 91                 # Dynamixel ID : 1
+DXL1_ID		                    = 91                 # Dynamixel ID : 1
 DXL2_ID		 	            = 92
 DXL3_ID		 	            = 93
 DXL4_ID		 	            = 94
@@ -181,13 +181,13 @@ while 1:
         dxl5_goal_position = min(max(dxl5_goal_position,dxl_MIN),dxl_MAX)        
         dxl6_goal_position = min(max(dxl6_goal_position,dxl_MIN),dxl_MAX)
 
-        print("  [ID:%03d] : %03d, [ID:%03d] : %03d" % (DXL5_ID, dxl5_goal_position, DXL5_ID, dxl6_goal_position))
+        #print("  [ID:%03d] : %03d, [ID:%03d] : %03d" % (DXL5_ID, dxl5_goal_position, DXL5_ID, dxl6_goal_position))
 
         setGoalPosition(DXL5_ID,dxl5_goal_position)
         setGoalPosition(DXL6_ID,dxl6_goal_position)
         dxl5_present_position = getPosition(DXL5_ID)
         dxl5_present_position = getPosition(DXL6_ID)
-        print("  [ID:%03d] : %03d, [ID:%03d] : %03d" % (DXL5_ID, dxl5_present_position, DXL5_ID, dxl6_present_position))
+        #print("  [ID:%03d] : %03d, [ID:%03d] : %03d" % (DXL5_ID, dxl5_present_position, DXL5_ID, dxl6_present_position))
 
         if kbhit():
             c = getch()
