@@ -67,12 +67,12 @@ ESC_ASCII_VALUE             = 0x1b
 SPACE_ASCII_VALUE           = 0x20
 
 #index = 0
-dxl1_goal_position          = 3072         # Goal position
-dxl2_goal_position          = 1024         # Goal position
+dxl1_goal_position          = 2048         # Goal position
+dxl2_goal_position          = 2048         # Goal position
 dxl3_goal_position          = 2048         # Goal position
 dxl4_goal_position          = 2048         # Goal position
-dxl5_goal_position          = 2048         # Goal position
-dxl6_goal_position          = 2048         # Goal position
+dxl5_goal_position          = 3000         # Goal position
+dxl6_goal_position          = 3000         # Goal position
 
 THETA_MAX, THETA_MIN        = 45, -45 
 
@@ -166,11 +166,11 @@ ser.flushInput()
 
 print("Entering while loop")
 while 1:
-	with open('pos3Data.txt', mode='a') as data:
+	with open('temp1.txt', mode='a') as data:
 	    if ser.inWaiting()>0:
         	theta = float(ser.readline().strip())
-            	dxl5_goal_position = int((theta/90.0)*2048 + 2048)
-            	dxl5_goal_position = min(max(dxl5_goal_position,1024),3072)
+            	dxl5_goal_position = int((theta/90.0)*2048 + 3072)
+            	dxl5_goal_position = max(min(dxl5_goal_position,3072),2048)
             	setGoalPosition(DXL5_ID,dxl5_goal_position)
 		print(theta)
         	endtime = time.time()
