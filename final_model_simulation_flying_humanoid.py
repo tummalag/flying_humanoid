@@ -31,10 +31,16 @@ threshold = 0.001
 # Time period
 dt = 0.001
 
-dt0, dt1, dt2, dt3 = (dt,0,0,0), (0,dt,0,0), (0,0,dt,0), (0,0,0,dt)
+dt0, dt1, dt2, dt3 = (0,0,0,0), (0,dt,0,0), (0,0,dt,0), (0,0,0,dt)
 
 # linearisation val
 e_lin = 0.001
+
+# Restrictions
+# Right arm
+#tr_min = []
+
+
 
 class ForwardKinematics():
     def get_right_end_eff(self,t=(0,0,0,0)):
@@ -47,7 +53,7 @@ class ForwardKinematics():
 
     def get_right_orientation(self,t=(0,0,0,0)):
         (t0,t1,t2,t3) = t
-        xt = np.cumsum([t0,  t1,  t2-1.5708,  t3])
+        xt = np.cumsum([t0,  t1-1.5708,  t2,  t3])
         yt = np.cumsum([ 0,  0 ,     0     ,   0])
         zt = np.cumsum([ 0,  0 ,     0     ,   0])
         #print("right orient",xt,yt,zt,sep='\n', end='\n\n')
@@ -63,7 +69,7 @@ class ForwardKinematics():
 
     def get_left_orientation(self,t=(0,0,0,0)):
         (t0,t1,t2,t3) = t
-        xt = np.cumsum([t0,  t1,  t2-1.5708,  t3])
+        xt = np.cumsum([t0,  t1-1.5708,  t2,  t3])
         yt = np.cumsum([ 0,  0 ,     0     ,   0])
         zt = np.cumsum([ 0,  0 ,     0     ,   0])
         #print("left orient",xt,yt,zt,sep='\n', end='\n\n')
