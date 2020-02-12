@@ -166,7 +166,7 @@ ser.flushInput()
 
 print("Entering while loop")
 while 1:
-	with open('position4Data.txt', mode='a') as data:
+	with open('pos2Data.txt', mode='a') as data:
 	    if ser.inWaiting()>0:
         	theta = float(ser.readline().strip())
 		print(theta)

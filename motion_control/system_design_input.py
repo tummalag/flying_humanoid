@@ -166,12 +166,12 @@ ser.flushInput()
 
 print("Entering while loop")
 while 1:
-	with open('position4Data.txt', mode='a') as data:
+	with open('pos3Data.txt', mode='a') as data:
 	    if ser.inWaiting()>0:
         	theta = float(ser.readline().strip())
-            dxl5_goal_position = int((theta/90.0)*2048 + 2048)
-            dxl5_goal_position = min(max(dxl5_goal_position,1024),3072)
-            setGoalPosition(DXL5_ID,dxl5_goal_position)
+            	dxl5_goal_position = int((theta/90.0)*2048 + 2048)
+            	dxl5_goal_position = min(max(dxl5_goal_position,1024),3072)
+            	setGoalPosition(DXL5_ID,dxl5_goal_position)
 		print(theta)
         	endtime = time.time()
         	data.write("%f, %f\n" % (endtime,theta))
