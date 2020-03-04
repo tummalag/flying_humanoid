@@ -3,6 +3,8 @@ import os
 import ctypes
 import time
 import serial
+import matplotlib.pyplot as plt
+
 
 if os.name == 'nt':
     import msvcrt
@@ -49,7 +51,7 @@ ADDR_PRESENT_POSITION       = 132
 PROTOCOL_VERSION            = 2.0               # See which protocol version is used in the Dynamixel
 
 # Default setting
-DXL1_ID                     = 91                 # Dynamixel ID : 1
+DXL1_ID                  	    = 91                 # Dynamixel ID : 1
 DXL2_ID		 	            = 92
 DXL3_ID		 	            = 93
 DXL4_ID		 	            = 94
@@ -67,17 +69,15 @@ ESC_ASCII_VALUE             = 0x1b
 SPACE_ASCII_VALUE           = 0x20
 
 #index = 0
-dxl1_goal_position          = 2048         # Goal position
-dxl2_goal_position          = 2048         # Goal position
+dxl1_goal_position          = 3072         # Goal position
+dxl2_goal_position          = 1024         # Goal position
 dxl3_goal_position          = 2048         # Goal position
 dxl4_goal_position          = 2048         # Goal position
-dxl5_goal_position          = 3000         # Goal position
-dxl6_goal_position          = 3000         # Goal position
+dxl5_goal_position          = 2048         # Goal position
+dxl6_goal_position          = 2048         # Goal position
 
 THETA_MAX, THETA_MIN        = 45, -45 
-
 dxl_MIN, dxl_MAX            = 1024, 3072
-
 
 # Initialize PortHandler instance
 # Set the port path
@@ -164,18 +164,26 @@ port = "/dev/ttyUSB1"
 ser = serial.Serial(port,115200)
 ser.flushInput()
 
+plt.figure()
+plt.ion()
+plt.axis((-0.6, 0.6, -0.6, 0.6))
+plt.grid(True)
+starttime = time.time()
+
 print("Entering while loop")
 while 1:
-	with open('temp1.txt', mode='a') as data:
+	with open('temp.txt', mode='a') as data:
 	    if ser.inWaiting()>0:
         	theta = float(ser.readline().strip())
-            	dxl5_goal_position = int((theta/90.0)*2048 + 3072)
+            	dxl5_goal_position = int((theta/90.0)*2048 + 2048)
             	dxl5_goal_position = max(min(dxl5_goal_position,3072),2048)
             	setGoalPosition(DXL5_ID,dxl5_goal_position)
 		print(theta)
         	endtime = time.time()
         	data.write("%f, %f\n" % (endtime,theta))
-    
+    		plt.plot([starttime-endtime],[theta],'r-')
+		plt.draw()
+		plt.pause(0.1)
             if kbhit():
                 c = getch()
                 if c == chr(ESC_ASCII_VALUE):
