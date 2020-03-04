@@ -1,7 +1,7 @@
 #include <Servo.h>
 
 // Desired Values
-double theta_D = 20.0;         // angle in degree
+double theta_D = 15.0;         // angle in degree
 int timer = 1000;
 
 const int mot[] = {5,10}; // Initializing motor pins
@@ -13,7 +13,7 @@ const double mot_PWM_offset[] = {60,60}; // Motor offset value.
 Servo left;               // Creating 2 servos left and right
 Servo right;
 const double servoMin = 0.0;  // servo PWM min value
-const double servoMax = 60.0; // servo PWM max value
+const double servoMax = 100.0; // servo PWM max value
 
 int potentiometerPin = A1;
 const int potRefVal = 550;  // Refereance Value
@@ -21,9 +21,14 @@ const int potMinVal = 250;  // Left most value -45 degree
 const int potMaxVal = 850;  // Right most value +45 degree
 
 // Gain constants
-const double kp = 0.025;
-const double ki = 0.0002;
+const double kp = 0.0919;
+const double ki = 0.0;
+const double kd = 0.0169;
+double p_err = 0.0;
 double i_err = 0.0;
+double d_err = 0.0;
+double prev_error = 0.0;
+int const dt = 10;
 
 double getAngle() {
   int potentiometerValue = analogRead(potentiometerPin);
@@ -106,14 +111,15 @@ void setup() {
 }
 
 void loop() {
-  //left.write(45);
-  //right.write(45);
   double theta = getAngle();
   double error = theta_D - theta;
-  i_err += ki*error;
-  double p_err = kp*error;
-  double c = p_err + i_err;
+  i_err += (dt/1000)*error;
+  d_err = (error-prev_error)/(dt/1000);
+  double c = kp*error + ki*i_err + kd*d_err;
+  c = max(min(c,0.422),-0.422);
   setMotor(c);
+  //Serial.print(c);
+  //Serial.print("\t");
   Serial.println(String(theta));
   //Serial.print(' ');
   //Serial.println(c);
@@ -125,5 +131,6 @@ void loop() {
   //Serial.print("\t");
   //Serial.println(theta_D);
   //Serial.println(timer);
+  
   delay(10);
 }
