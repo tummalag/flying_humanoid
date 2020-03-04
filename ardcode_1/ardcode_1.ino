@@ -21,10 +21,15 @@ const int potMinVal = 250;  // Left most value -45 degree
 const int potMaxVal = 850;  // Right most value +45 degree
 
 // Gain constants
+<<<<<<< Updated upstream
 const double kp = 0.0919;
 const double ki = 0.0;
 const double kd = 0.0169;
 double p_err = 0.0;
+=======
+const double kp = 0.005;
+const double ki = 0.00009;
+>>>>>>> Stashed changes
 double i_err = 0.0;
 double d_err = 0.0;
 double prev_error = 0.0;
