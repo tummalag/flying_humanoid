@@ -1,5 +1,8 @@
+import time
 import serial
 import os
+import matplotlib.pyplot as plt
+plt.switch_backend('agg')
 
 if os.name == 'nt':
     import msvcrt
@@ -34,21 +37,34 @@ else:
 
         return 0
 
+plt.ion()
+fig = plt.figure()
 
 # Initializing port settings for Arduino
 port = "/dev/ttyUSB1"
 ser = serial.Serial(port,115200)
 ser.flushInput()
-
+theta,force,et = [],[],[]
 while(1):
-	if ser.inWaiting()>0:
-		force = ser.readStringUntil('\t')
-		theta = ser.readStringUntil('\n')
-		ser.flushInput()
-		print(theta,'\t',force)
+    if ser.inWaiting()>0:
+        data = ser.readline().strip()
+        endtime = time.time()
+        ser.flushInput()
+        t,f = data.split('\t')
+        #print(theta,force)
+        #print(data)
+        theta.append(t)
+        force.append(f)
+        et.append(endtime)
+        #print(theta,force)
+        plt.scatter(et,theta,c='b',label='theta')
+        plt.scatter(et,force,c='r',label='force')
+        plt.legend(loc='upper right')
+        plt.show()
 
-		if kbhit():
-            	    c = getch()
-            	    if c == chr(ESC_ASCII_VALUE):
-                        print("STOPPED!!!!")
-                	break
+        if kbhit():
+            c = getch()
+            if c == chr(ESC_ASCII_VALUE):
+                print("STOPPED!!!!")
+               	break
+	
