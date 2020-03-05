@@ -48,7 +48,7 @@ while(1):
 		print(theta,'\t',force)
 
 		if kbhit():
-            c = getch()
-            if c == chr(ESC_ASCII_VALUE):
-                print("STOPPED!!!!")
-                break
+            	    c = getch()
+            	    if c == chr(ESC_ASCII_VALUE):
+                        print("STOPPED!!!!")
+                	break
