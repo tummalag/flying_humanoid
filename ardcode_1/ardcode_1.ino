@@ -21,19 +21,14 @@ const int potMinVal = 250;  // Left most value -45 degree
 const int potMaxVal = 850;  // Right most value +45 degree
 
 // Gain constants
-<<<<<<< Updated upstream
 const double kp = 0.0919;
 const double ki = 0.0;
 const double kd = 0.0169;
 double p_err = 0.0;
-=======
-const double kp = 0.005;
-const double ki = 0.00009;
->>>>>>> Stashed changes
 double i_err = 0.0;
 double d_err = 0.0;
 double prev_error = 0.0;
-int const dt = 10;
+int const dt = 1000;
 
 double getAngle() {
   int potentiometerValue = analogRead(potentiometerPin);
@@ -98,7 +93,8 @@ int startUp(){
   delay(2000);
   return 0;
 }
-
+//int pid(error){
+//}
 void setup() {
   Serial.begin(115200);
   //Serial.println("Bot is ready to fly!!");
@@ -121,21 +117,21 @@ void loop() {
   i_err += (dt/1000)*error;
   d_err = (error-prev_error)/(dt/1000);
   double c = kp*error + ki*i_err + kd*d_err;
-  c = max(min(c,0.422),-0.422);
-  setMotor(c);
+  prev_error = error;
   //Serial.print(c);
-  //Serial.print("\t");
-  Serial.println(String(theta));
-  //Serial.print(' ');
+  // Adding threshold 
+  c = max(min(c,0.411),0.0);
+  setMotor(c);
+  Serial.print(c);
+  Serial.print("\t");
+  Serial.println(theta);
+  /*Serial.print(' ');
   //Serial.println(c);
   if ( timer < 0 ){
     timer = 1000;
     theta_D = -theta_D; 
   }
   timer--;
-  //Serial.print("\t");
-  //Serial.println(theta_D);
-  //Serial.println(timer);
-  
+ */
   delay(10);
 }
