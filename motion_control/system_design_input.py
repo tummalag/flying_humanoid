@@ -4,7 +4,7 @@ import ctypes
 import time
 import serial
 import matplotlib.pyplot as plt
-
+plt.switch_backend('agg')
 
 if os.name == 'nt':
     import msvcrt
@@ -174,8 +174,9 @@ print("Entering while loop")
 while 1:
 	with open('temp.txt', mode='a') as data:
 	    if ser.inWaiting()>0:
-        	theta = float(ser.readline().strip())
-            	dxl5_goal_position = int((theta/90.0)*2048 + 2048)
+        	theta,force = (ser.readline().strip()).split('\t')
+            	theta = float(theta)
+                dxl5_goal_position = int((theta/90.0)*2048 + 2048)
             	dxl5_goal_position = max(min(dxl5_goal_position,3072),2048)
             	setGoalPosition(DXL5_ID,dxl5_goal_position)
 		print(theta)

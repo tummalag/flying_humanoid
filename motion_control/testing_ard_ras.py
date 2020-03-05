@@ -167,9 +167,9 @@ print("Entering while loop")
 while 1:
     with open('sysImpData.txt', mode='a') as data:
         if ser.inWaiting()>0:
-            theta,force = (ser.readline().strip()).split('\t')
+            force,theta = (ser.readline().strip()).split('\t')
             ser.flushInput()
-            print(theta)
+            print(theta,)
 
             theta,force,endtime = float(theta),float(force),time.time()
             data.write("%f, %f, %f\n" % (endtime,theta,force))

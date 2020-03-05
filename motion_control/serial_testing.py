@@ -61,6 +61,7 @@ while(1):
         plt.scatter(et,force,c='r',label='force')
         plt.legend(loc='upper right')
         plt.show()
+        plt.pause(0.1)
 
         if kbhit():
             c = getch()

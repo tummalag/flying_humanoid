@@ -11,7 +11,7 @@ import serial
 import time
 
 # Initializing port settings
-port = "/dev/ttyUSB1"
+port = "/dev/ttyUSB0"
 ser = serial.Serial(port,9600)
 ser.flushInput()
 
