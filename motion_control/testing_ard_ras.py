@@ -165,35 +165,36 @@ ser.flushInput()
 
 print("Entering while loop")
 while 1:
-    if ser.inWaiting()>0:
-        theta = ser.readline()
-        ser.flushInput()
-        print(theta)
+    with open('sysImpData.txt', mode='a') as data:
+        if ser.inWaiting()>0:
+            theta,force = (ser.readline().strip()).split('\t')
+            ser.flushInput()
+            print(theta)
 
-        theta = float(theta)
-        theta = min(max(theta,THETA_MIN),THETA_MAX)         # Binding theta values in between 45 and -45 degrees 
-        
-        # defining the position value
-        dxl5_goal_position = int((theta/90.0)*2048 + 2048)
-        dxl6_goal_position = int((-theta/90.0)*2048 + 2048)
+            theta,force,endtime = float(theta),float(force),time.time()
+            data.write("%f, %f, %f\n" % (endtime,theta,force))
+            theta = min(max(theta,THETA_MIN),THETA_MAX)         # Binding theta values in between 45 and -45 degrees 
+            
+            # defining the position value
+            dxl5_goal_position = int((theta/90.0)*2048 + 2048)
+            dxl6_goal_position = int((-theta/90.0)*2048 + 2048)
+            # Binding dxl positions 
+            dxl5_goal_position = min(max(dxl5_goal_position,dxl_MIN),dxl_MAX)        
+            dxl6_goal_position = min(max(dxl6_goal_position,dxl_MIN),dxl_MAX)
 
-        # Binding dxl positions 
-        dxl5_goal_position = min(max(dxl5_goal_position,dxl_MIN),dxl_MAX)        
-        dxl6_goal_position = min(max(dxl6_goal_position,dxl_MIN),dxl_MAX)
+            #print("  [ID:%03d] : %03d, [ID:%03d] : %03d" % (DXL5_ID, dxl5_goal_position, DXL5_ID, dxl6_goal_position))
 
-        #print("  [ID:%03d] : %03d, [ID:%03d] : %03d" % (DXL5_ID, dxl5_goal_position, DXL5_ID, dxl6_goal_position))
+            setGoalPosition(DXL5_ID,dxl5_goal_position)
+            setGoalPosition(DXL6_ID,dxl6_goal_position)
+            dxl5_present_position = getPosition(DXL5_ID)
+            dxl5_present_position = getPosition(DXL6_ID)
+            #print("  [ID:%03d] : %03d, [ID:%03d] : %03d" % (DXL5_ID, dxl5_present_position, DXL5_ID, dxl6_present_position))
 
-        setGoalPosition(DXL5_ID,dxl5_goal_position)
-        setGoalPosition(DXL6_ID,dxl6_goal_position)
-        dxl5_present_position = getPosition(DXL5_ID)
-        dxl5_present_position = getPosition(DXL6_ID)
-        #print("  [ID:%03d] : %03d, [ID:%03d] : %03d" % (DXL5_ID, dxl5_present_position, DXL5_ID, dxl6_present_position))
-
-        if kbhit():
-            c = getch()
-            if c == chr(ESC_ASCII_VALUE):
-                print("STOPPED!!!!")
-                break
+            if kbhit():
+                c = getch()
+                if c == chr(ESC_ASCII_VALUE):
+                    print("STOPPED!!!!")
+                    break
 
 # Function to Disable Dynamixel Torque DXL
 def disableTorque(DXL_ID):
