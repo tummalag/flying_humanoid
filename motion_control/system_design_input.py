@@ -69,12 +69,12 @@ ESC_ASCII_VALUE             = 0x1b
 SPACE_ASCII_VALUE           = 0x20
 
 #index = 0
-dxl1_goal_position          = 3072         # Goal position
-dxl2_goal_position          = 1024         # Goal position
+dxl1_goal_position          = 2048         # Goal position
+dxl2_goal_position          = 2048         # Goal position
 dxl3_goal_position          = 2048         # Goal position
 dxl4_goal_position          = 2048         # Goal position
-dxl5_goal_position          = 2048         # Goal position
-dxl6_goal_position          = 2048         # Goal position
+dxl5_goal_position          = 3072         # Goal position
+dxl6_goal_position          = 3072         # Goal position
 
 THETA_MAX, THETA_MIN        = 45, -45 
 dxl_MIN, dxl_MAX            = 1024, 3072
@@ -164,27 +164,20 @@ port = "/dev/ttyUSB1"
 ser = serial.Serial(port,115200)
 ser.flushInput()
 
-plt.figure()
-plt.ion()
-plt.axis((-0.6, 0.6, -0.6, 0.6))
-plt.grid(True)
 starttime = time.time()
 
 print("Entering while loop")
 while 1:
-	with open('temp.txt', mode='a') as data:
+	with open('widepos.txt', mode='a') as data:
 	    if ser.inWaiting()>0:
-        	theta,force = (ser.readline().strip()).split('\t')
+        	theta = (ser.readline().strip())
             	theta = float(theta)
-                dxl5_goal_position = int((theta/90.0)*2048 + 2048)
-            	dxl5_goal_position = max(min(dxl5_goal_position,3072),2048)
-            	setGoalPosition(DXL5_ID,dxl5_goal_position)
+                #dxl5_goal_position = int((theta/90.0)*2048 + 2048)
+            	#dxl5_goal_position = max(min(dxl5_goal_position,3072),2048)
+            	#setGoalPosition(DXL5_ID,dxl5_goal_position)
 		print(theta)
         	endtime = time.time()
         	data.write("%f, %f\n" % (endtime,theta))
-    		plt.plot([starttime-endtime],[theta],'r-')
-		plt.draw()
-		plt.pause(0.1)
             if kbhit():
                 c = getch()
                 if c == chr(ESC_ASCII_VALUE):
