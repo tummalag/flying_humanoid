@@ -1,0 +1,4 @@
+Hello world
+How are you
+this is my new text file
+Fourth line

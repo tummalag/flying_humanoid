@@ -1,0 +1,31 @@
+45 PWM - 0% dutycycle - 0gms
+57 PWM - 10% dutycycle - 5.9gms
+60 PWM			- 23.96 gms
+65 PWM			- 61.05gms  
+69 PWM - 20% dutycycle - 83.63gms
+81 PWM - 30% dutycycle - 168.39 gms
+93 PWM - 40% dutycycle - 224.96 gms
+
+
+105 PWM - 50% dutycycle - 281.15 gms
+117 PWM - 60% dutycycle - 320.33 gms
+129 PWM - 70% dutycycle - 382.04 gms
+141 PWM - 80% dutycycle - 411.23 gms
+153 PWM - 90% dutycycle -
+165 PWM - 100% dutycycle - 
+
+11.99V power supply
+57 PWM - 10% dutycycle - 5.7 gms - 11.99 V
+60 PWM			- 24.96 gms - 11.99 V
+65 PWM			- 61.05gms - 11.98 V 
+69 PWM - 20% dutycycle - 87.63gms - 11.98 V
+75 PWM - 25% 		- 130.37 gms - 11.98 V
+81 PWM - 30% dutycycle - 168.39 gms - 11.97 V
+93 PWM - 40% dutycycle - 234.96 gms - 11.96 V
+105 PWM - 50% dutycycle - 283.87 gms - 11.96 Volts
+117 PWM - 60% dutycycle - 326.11 gms - 11.96 V
+129 PWM - 70% dutycycle - 382.13 gms - 11.94 V
+135 PWM - 75% dutycycle	- 422.36 gms - 11.94 
+141 PWM - 80% dutycycle - 422.05 gms - 11.94 V
+153 PWM - 90% dutycycle - 
+165 PWM - 100% dutycycle - 
